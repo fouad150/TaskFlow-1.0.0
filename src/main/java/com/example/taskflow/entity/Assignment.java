@@ -17,4 +17,9 @@ public class Assignment {
     private Task task;
     @ManyToOne
     private User user;
+
+    public Assignment(Task task, User user) {
+        this.task=task;
+        this.user=user;
+    }
 }

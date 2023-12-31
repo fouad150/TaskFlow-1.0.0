@@ -12,11 +12,11 @@ import lombok.*;
 public class AssignmentDTO {
     @NotBlank(message = "the manager's id cannot be blank")
     @NotNull(message="the manager's id cannot be null")
-    private String managerId;
+    private Long managerId;
     @NotBlank(message = "the employee's id cannot be blank")
     @NotNull(message="the employee's id cannot be null")
-    private String employeeId;
+    private Long employeeId;
     @NotBlank(message = "the task's id cannot be blank")
     @NotNull(message="the task's id cannot be null")
-    private String taskId;
+    private Long taskId;
 }
