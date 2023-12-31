@@ -1,5 +1,6 @@
 package com.example.taskflow.service.impl;
 
+import com.example.taskflow.DTO.AdditionalAssignmentDTO;
 import com.example.taskflow.DTO.AssignmentDTO;
 import com.example.taskflow.entity.Assignment;
 import com.example.taskflow.entity.Task;
@@ -52,12 +53,37 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         Optional<Assignment> foundAssignmentByTask=assignmentRepository.findByTask(foundTask.get());
         if(foundAssignmentByTask.isPresent()){
-            throw new AlreadyExistsException("this task is already");
+            throw new AlreadyExistsException("this task is already taken");
         }
 
         Assignment assignment=new Assignment(foundTask.get(),foundEmployee.get());
 
         return assignmentRepository.save(assignment);
 
+    }
+
+    @Override
+    public Assignment addAdditionalAssignment(AdditionalAssignmentDTO additionalAssignmentDTO){
+        Optional<User> foundEmployee=userService.findById(additionalAssignmentDTO.getEmployeeId());
+        Optional<Task> foundTask=taskService.findById(additionalAssignmentDTO.getTaskId());
+        if(foundEmployee.isEmpty()){
+            throw new DoesNoExistException("this employee doesn't exist");
+        }
+        if(foundTask.isEmpty()){
+            throw new DoesNoExistException("this task doesn't exist");
+        }
+
+        if(foundTask.get().getEndDateTime().isBefore(LocalDateTime.now())){
+            throw new StartAndEndTimeException("the deadline of this task is over");
+        }
+
+        Optional<Assignment> foundAssignmentByTask=assignmentRepository.findByTask(foundTask.get());
+        if(foundAssignmentByTask.isPresent()){
+            throw new AlreadyExistsException("this task is already taken");
+        }
+
+        Assignment assignment=new Assignment(foundTask.get(),foundEmployee.get());
+
+        return assignmentRepository.save(assignment);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.taskflow.controller;
 
+import com.example.taskflow.DTO.AdditionalAssignmentDTO;
 import com.example.taskflow.DTO.AssignmentDTO;
 import com.example.taskflow.entity.Assignment;
 import com.example.taskflow.service.AssignmentService;
@@ -23,5 +24,11 @@ public class AssignmentController {
         System.out.println("taskId "+assignmentDTO.getTaskId());
         Assignment assignment=assignmentService.save(assignmentDTO);
         return new ResponseEntity<>(assignment, HttpStatus.OK);
+    }
+
+    @PostMapping("/additionalAssignment")
+    public ResponseEntity<?> addAdditionalAssignment(@RequestBody @Valid AdditionalAssignmentDTO additionalAssignmentDTO){
+        Assignment additionalAssignment=assignmentService.addAdditionalAssignment(additionalAssignmentDTO);
+        return new ResponseEntity<>(additionalAssignment, HttpStatus.OK);
     }
 }
