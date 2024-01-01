@@ -20,6 +20,8 @@ public class User {
     private String email;
 
     private String password;
+    private int replacement=2;
+    private int deletion=1;
     @ManyToOne
     private Role role;
 

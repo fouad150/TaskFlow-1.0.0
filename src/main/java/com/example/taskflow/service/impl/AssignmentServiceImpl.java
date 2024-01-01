@@ -2,6 +2,7 @@ package com.example.taskflow.service.impl;
 
 import com.example.taskflow.DTO.AdditionalAssignmentDTO;
 import com.example.taskflow.DTO.AssignmentDTO;
+import com.example.taskflow.DTO.ReplacementDTO;
 import com.example.taskflow.entity.Assignment;
 import com.example.taskflow.entity.Task;
 import com.example.taskflow.entity.User;
@@ -85,5 +86,37 @@ public class AssignmentServiceImpl implements AssignmentService {
         Assignment assignment=new Assignment(foundTask.get(),foundEmployee.get());
 
         return assignmentRepository.save(assignment);
+    }
+
+    @Override
+    public void replaceTask(ReplacementDTO replacementDTO){
+        Optional<User> foundEmployee=userService.findById(replacementDTO.getEmployeeId());
+        Optional<Task> foundTask=taskService.findById(replacementDTO.getTaskId());
+
+        if(foundEmployee.isEmpty()){
+            throw new DoesNoExistException("this employee doesn't exist");
+        }
+        if(foundTask.isEmpty()){
+            throw new DoesNoExistException("this task doesn't exist");
+        }
+
+        if(foundTask.get().getEndDateTime().isBefore(LocalDateTime.now())){
+            throw new StartAndEndTimeException("the deadline of this task is over");
+        }
+
+        Optional<Assignment> foundAssignmentByTask=assignmentRepository.findByTask(foundTask.get());
+        if(foundAssignmentByTask.isEmpty()){
+            throw new AlreadyExistsException("this employee doesn't have this task");
+        }
+
+        if(foundEmployee.get().getReplacement()==0){
+            throw new AuthorizationException("this employee has already used all available replacements");
+        }
+
+        assignmentRepository.delete(foundAssignmentByTask.get());
+
+        User employee=foundEmployee.get();
+        employee.setReplacement(employee.getReplacement()-1);
+        userService.save(employee);
     }
 }

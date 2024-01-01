@@ -7,6 +7,7 @@ import com.example.taskflow.repository.UserRepository;
 import com.example.taskflow.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
@@ -44,4 +45,40 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findById(Long id){
         return userRepository.findById(id);
     }
+
+
+    @Override
+    public void initializeReplacement() {
+        List<User> employees = userRepository.findAll();
+        employees.forEach(employee -> {
+            employee.setReplacement(2);
+            userRepository.save(employee);
+        });
+    }
+
+    @Override
+    public User save(User user){
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void initializeDeletion(){
+        List<User> employees = userRepository.findAll();
+        employees.forEach(employee -> {
+            employee.setDeletion(1);
+            userRepository.save(employee);
+        });
+    }
+
+
+   /* @Override
+    public void increaseReplacement() {
+        User user = userRepository.findById(3L)
+                .orElseThrow(() -> new IllegalStateException("user does not exist"));
+
+        user.setReplacement(user.getReplacement() + 1);
+        userRepository.save(user);
+    }*/
+
+
 }
