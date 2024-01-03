@@ -2,6 +2,7 @@ package com.example.taskflow.controller;
 
 import com.example.taskflow.DTO.AdditionalAssignmentDTO;
 import com.example.taskflow.DTO.AssignmentDTO;
+import com.example.taskflow.DTO.DeletionDTO;
 import com.example.taskflow.DTO.ReplacementDTO;
 import com.example.taskflow.entity.Assignment;
 import com.example.taskflow.service.AssignmentService;
@@ -38,5 +39,11 @@ public class AssignmentController {
         return new ResponseEntity<>("the replacement has been done successfully",HttpStatus.OK);
     }
 
+
+    @PostMapping("/delete-task")
+    public ResponseEntity<?> deleteTask(@RequestBody @Valid DeletionDTO deletionDTO){
+        assignmentService.deleteTask(deletionDTO);
+        return new ResponseEntity<>("the deletion has been done successfully",HttpStatus.OK);
+    }
 
 }
